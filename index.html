@@ -232,7 +232,7 @@ function get(id){return Number(document.getElementById(id).value||0)}
 function hitung(){
   const skor=['s1','s2','s3','s4','s5'].map(get);
   if(skor.some(v=>v<1)){
-    document.getElementById('output').innerHTML='<div class="result red">Lengkapi semua skor (1–5)</div>';
+    document.getElementById('output').innerHTML='<div class="result red">Lengkapi skor (1–5) Buruk-Bagus</div>';
     return;
   }
 
