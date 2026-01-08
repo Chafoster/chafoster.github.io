@@ -1,1 +1,1 @@
-Ini adalah website untuk survey tempat lokasi usaha untuk kemitraan Tomoro Coffee Surabaya.
+Ini adalah website dashboard untuk survey tempat lokasi usaha untuk kemitraan Tomoro Coffee Surabaya.
