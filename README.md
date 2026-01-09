@@ -2,7 +2,7 @@
 
 A modern web-based dashboard for **location feasibility analysis** designed for **UMKM, F&B businesses, coffee shops, and retail entrepreneurs**.
 This tool helps business owners make **data-driven location decisions** by combining qualitative scoring, traffic estimation, and simple financial projections in one clean, easy-to-use interface.
-
+- https://monnarrchoo.github.io/
 ---
 
 ## ✨ Key Features
