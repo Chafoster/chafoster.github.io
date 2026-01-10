@@ -303,5 +303,88 @@ function hitung(){
   `;
 }
 </script>
+  <script>
+function get(id){return Number(document.getElementById(id).value||0)}
+
+function drawRadar(scores){
+  const c = document.getElementById("radarChart");
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+
+  const labels = ["Lokasi","Sewa","Kompetitor","Online","Parkir"];
+  const cx = 150, cy = 150, r = 100;
+
+  ctx.strokeStyle="#ddd";
+  for(let i=1;i<=5;i++){
+    ctx.beginPath();
+    for(let a=0;a<5;a++){
+      const angle = (Math.PI*2/5)*a - Math.PI/2;
+      const x = cx + (r*i/5)*Math.cos(angle);
+      const y = cy + (r*i/5)*Math.sin(angle);
+      a===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath(); ctx.stroke();
+  }
+
+  ctx.beginPath();
+  scores.forEach((v,i)=>{
+    const angle = (Math.PI*2/5)*i - Math.PI/2;
+    const x = cx + (r*v/5)*Math.cos(angle);
+    const y = cy + (r*v/5)*Math.sin(angle);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle="rgba(225,6,0,.3)";
+  ctx.strokeStyle="#E10600";
+  ctx.fill(); ctx.stroke();
+}
+
+function drawBar(omzet,sewa){
+  const c = document.getElementById("barChart");
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+
+  const max = Math.max(omzet,sewa);
+  const scale = 150/max;
+
+  ctx.fillStyle="#E10600";
+  ctx.fillRect(80,180-omzet*scale,60,omzet*scale);
+
+  ctx.fillStyle="#333";
+  ctx.fillRect(200,180-sewa*scale,60,sewa*scale);
+
+  ctx.fillStyle="#000";
+  ctx.fillText("Omzet",90,195);
+  ctx.fillText("Sewa",215,195);
+}
+
+function hitung(){
+  const s = [get('s1'),get('s2'),get('s3'),get('s4'),get('s5')];
+  if(s.some(v=>v<1)){
+    document.getElementById('output').innerHTML =
+      '<div class="result red">Lengkapi semua skor (1–5)</div>';
+    return;
+  }
+
+  const total = s.reduce((a,b)=>a+b,0);
+  const omzet = Math.round(get('traffic')*0.05)*get('harga')*30;
+  const sewa = get('sewa');
+
+  let cls='red', status='RISIKO TINGGI';
+  if(total>=22){cls='green';status='SANGAT LAYAK'}
+  else if(total>=18){cls='yellow';status='LAYAK (Negosiasi)'}
+
+  document.getElementById('output').innerHTML = `
+    <div class="result ${cls}">
+      Total Skor: <b>${total}/25</b><br>
+      Estimasi Omzet: <b>Rp ${omzet.toLocaleString('id-ID')}</b><br>
+      Kesimpulan: <b>${status}</b>
+    </div>
+  `;
+
+  drawRadar(s);
+  drawBar(omzet,sewa);
+}
+</script>
 </body>
 </html>
