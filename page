@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monnarrchoo | Links</title>
+
+  <style>
+    :root{
+      --primary:#E10600;
+      --bg:#f5f5f5;
+      --card:#ffffff;
+      --text:#111;
+      --sub:#777;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: Inter, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+      padding:32px 16px;
+    }
+
+    .container{
+      width:100%;
+      max-width:420px;
+      background:var(--card);
+      border-radius:20px;
+      padding:28px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+      text-align:center;
+    }
+
+    .avatar{
+      width:96px;
+      height:96px;
+      border-radius:50%;
+      background:var(--primary);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:32px;
+      font-weight:900;
+      margin:0 auto 14px;
+    }
+
+    h1{
+      font-size:20px;
+      margin:0;
+    }
+
+    p{
+      font-size:13px;
+      color:var(--sub);
+      margin:6px 0 20px;
+    }
+
+    .link{
+      display:block;
+      text-decoration:none;
+      background:#fff;
+      border:1px solid #eee;
+      border-radius:999px;
+      padding:14px 18px;
+      margin-bottom:12px;
+      font-weight:600;
+      color:#000;
+      transition:.2s ease;
+    }
+
+    .link:hover{
+      background:var(--primary);
+      color:#fff;
+      transform:translateY(-2px);
+    }
+
+    footer{
+      margin-top:20px;
+      font-size:11px;
+      color:#aaa;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="avatar">M</div>
+
+  <h1>Monnarrchoo</h1>
+  <p>Business • UMKM • Digital Tools</p>
+
+  <a class="link" href="#" target="_blank">🌐 Website Utama</a>
+  <a class="link" href="#" target="_blank">📊 Dashboard UMKM</a>
+  <a class="link" href="#" target="_blank">📸 Instagram</a>
+  <a class="link" href="#" target="_blank">💬 WhatsApp</a>
+  <a class="link" href="#" target="_blank">📧 Email</a>
+
+  <footer>© 2026 Monnarrchoo</footer>
+</div>
+
+</body>
+</html>
