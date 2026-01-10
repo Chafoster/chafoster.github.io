@@ -221,8 +221,6 @@
       <button class="btn-dark" onclick="window.print()">Export PDF</button>
     </div>
     <div id="output"></div>
-    <canvas id="radarChart" width="300" height="300" style="margin-top:20px"></canvas>
-    <canvas id="barChart" width="400" height="200" style="margin-top:20px"></canvas>
   </div>
 
   <footer>Monnarrchoo © 2026</footer>
@@ -231,84 +229,76 @@
 <script>
 function get(id){return Number(document.getElementById(id).value||0)}
 
-function drawRadar(scores){
-  const c = document.getElementById("radarChart");
-  const ctx = c.getContext("2d");
-  ctx.clearRect(0,0,c.width,c.height);
-
-  const labels = ["Lokasi","Sewa","Kompetitor","Online","Parkir"];
-  const cx = 150, cy = 150, r = 100;
-
-  ctx.strokeStyle="#ddd";
-  for(let i=1;i<=5;i++){
-    ctx.beginPath();
-    for(let a=0;a<5;a++){
-      const angle = (Math.PI*2/5)*a - Math.PI/2;
-      const x = cx + (r*i/5)*Math.cos(angle);
-      const y = cy + (r*i/5)*Math.sin(angle);
-      a===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-    }
-    ctx.closePath(); ctx.stroke();
-  }
-
-  ctx.beginPath();
-  scores.forEach((v,i)=>{
-    const angle = (Math.PI*2/5)*i - Math.PI/2;
-    const x = cx + (r*v/5)*Math.cos(angle);
-    const y = cy + (r*v/5)*Math.sin(angle);
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-  });
-  ctx.closePath();
-  ctx.fillStyle="rgba(225,6,0,.3)";
-  ctx.strokeStyle="#E10600";
-  ctx.fill(); ctx.stroke();
-}
-
-function drawBar(omzet,sewa){
-  const c = document.getElementById("barChart");
-  const ctx = c.getContext("2d");
-  ctx.clearRect(0,0,c.width,c.height);
-
-  const max = Math.max(omzet,sewa);
-  const scale = 150/max;
-
-  ctx.fillStyle="#E10600";
-  ctx.fillRect(80,180-omzet*scale,60,omzet*scale);
-
-  ctx.fillStyle="#333";
-  ctx.fillRect(200,180-sewa*scale,60,sewa*scale);
-
-  ctx.fillStyle="#000";
-  ctx.fillText("Omzet",90,195);
-  ctx.fillText("Sewa",215,195);
-}
-
 function hitung(){
-  const s = [get('s1'),get('s2'),get('s3'),get('s4'),get('s5')];
-  if(s.some(v=>v<1)){
+  const skorMap = {
+    lokasi: get('s1'),
+    sewa: get('s2'),
+    kompetitor: get('s3'),
+    online: get('s4'),
+    parkir: get('s5')
+  };
+
+  const skor = Object.values(skorMap);
+  if(skor.some(v => v < 1)){
     document.getElementById('output').innerHTML =
       '<div class="result red">Lengkapi semua skor (1–5)</div>';
     return;
   }
 
-  const total = s.reduce((a,b)=>a+b,0);
-  const omzet = Math.round(get('traffic')*0.05)*get('harga')*30;
+  const total = skor.reduce((a,b)=>a+b,0);
+  const traffic = get('traffic');
+  const harga = get('harga');
   const sewa = get('sewa');
 
+  const omzet = Math.round(traffic * 0.05) * harga * 30;
+  const rasioSewa = sewa / omzet;
+
+  /* ===== STATUS KELAYAKAN ===== */
   let cls='red', status='RISIKO TINGGI';
-  if(total>=22){cls='green';status='SANGAT LAYAK'}
-  else if(total>=18){cls='yellow';status='LAYAK (Negosiasi)'}
+  if(total >= 22){ cls='green'; status='SANGAT LAYAK'; }
+  else if(total >= 18){ cls='yellow'; status='LAYAK (Perlu Negosiasi)'; }
+
+  /* ===== INSIGHT ===== */
+  let insight = [];
+  if(skorMap.lokasi >= 4) insight.push('Visibilitas lokasi sangat kuat');
+  if(skorMap.kompetitor <= 2) insight.push('Tekanan kompetitor cukup tinggi');
+  if(skorMap.online >= 4) insight.push('Potensi online order sangat baik');
+  if(rasioSewa > 0.4) insight.push('Biaya sewa berisiko terhadap cashflow');
+
+  if(insight.length === 0) insight.push('Karakteristik lokasi relatif seimbang');
+
+  /* ===== REKOMENDASI ===== */
+  let rekomendasi = [];
+  if(rasioSewa > 0.4){
+    rekomendasi.push('Disarankan negosiasi sewa atau skema revenue sharing');
+  }
+  if(skorMap.kompetitor <= 2){
+    rekomendasi.push('Perlu diferensiasi menu atau strategi promo agresif');
+  }
+  if(skorMap.online >= 4){
+    rekomendasi.push('Fokuskan GoFood/GrabFood sejak awal operasional');
+  }
+  if(rekomendasi.length === 0){
+    rekomendasi.push('Lokasi cukup aman untuk langsung dieksekusi');
+  }
 
   document.getElementById('output').innerHTML = `
     <div class="result ${cls}">
+      <b>HASIL ANALISA</b><br><br>
+
       Total Skor: <b>${total}/25</b><br>
-      Estimasi Omzet: <b>Rp ${omzet.toLocaleString('id-ID')}</b><br>
-      Kesimpulan: <b>${status}</b>
+      Estimasi Omzet/Bulan: <b>Rp ${omzet.toLocaleString('id-ID')}</b><br>
+      Rasio Sewa terhadap Omzet: <b>${(rasioSewa*100).toFixed(1)}%</b><br><br>
+
+      <b>Insight Utama:</b>
+      <ul>${insight.map(i=>`<li>${i}</li>`).join('')}</ul>
+
+      <b>Rekomendasi:</b>
+      <ul>${rekomendasi.map(r=>`<li>${r}</li>`).join('')}</ul>
+
+      <b>Kesimpulan:</b> ${status}
     </div>
   `;
-
-  drawRadar(s);
-  drawBar(omzet,sewa);
 }
 </script>
 
